@@ -29,3 +29,12 @@ def fazer_pedido():
             print("sabor não está no cardápio")
 
     return pedido, total
+
+mostrar_cardapio()
+pedido, total = fazer_pedido()
+
+print(f"\nSeu pedido? {pedido}")
+print(f"\nTotal: R${total:.2f}")
+
+if total > 15:
+    print(f"Você ganhou um brinde: {random.choice(brindes)}\n")
