@@ -10,6 +10,22 @@ cardapio = {
 brindes = ["Canudo", "Copo Personalizado", "Gelo", "Badge"]
 
 def mostrar_cardapio():
-    print("-- CARDAPIO --")
+    print("-- CARDÁPIO --")
     for sabor, preco in cardapio.items():
-        
+        print(f"{sabor.title()}, R${preco}")
+
+def fazer_pedido():
+    total = 0
+    pedido = []
+    while True:
+        sabor = input("\nEscolha o sabor: (Digite 'fechar' para sair)")
+        if sabor == 'fechar':
+            break
+        elif sabor in cardapio:
+            total += cardapio[sabor]
+            pedido.append(sabor)
+            print(f"{sabor} adicionado!")
+        else:
+            print("sabor não está no cardápio")
+
+    return pedido, total
