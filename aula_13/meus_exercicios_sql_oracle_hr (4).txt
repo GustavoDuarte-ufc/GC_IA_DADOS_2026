@@ -1,0 +1,219 @@
+SQL LAB — EXERCÍCIOS DO SCHEMA HR ORACLE
+Minhas consultas — sem gabarito
+
+================================================================
+
+EXERCÍCIO 01 — Contratações em ordem
+Nível 1: Consultas básicas, filtros e ordenação
+Liste o sobrenome (LAST_NAME), cargo (JOB_ID) e data de contratação (HIRE_DATE) de todos os funcionários, ordenando da contratação mais antiga para a mais recente.
+
+SELECT LAST_NAME, JOB_ID, HIRE_DATE FROM HR.EMPLOYEES ORDER BY HIRE_DATE ASC;
+
+----------------------------------------------------------------
+
+EXERCÍCIO 02 — Salários e cargo
+Nível 1: Consultas básicas, filtros e ordenação
+Exiba o primeiro nome, sobrenome e salário dos funcionários que ganham mais de $12.000 e ocupam o cargo IT_PROG.
+
+SELECT FIRST_NAME, LAST_NAME, SALARY 
+FROM HR.EMPLOYEES 
+WHERE SALARY > 12000 AND JOB_ID = 'IT_PROG'; 
+
+----------------------------------------------------------------
+
+EXERCÍCIO 03 — Sobrenomes com J ou K
+Nível 1: Consultas básicas, filtros e ordenação
+Selecione todos os funcionários cujo sobrenome (LAST_NAME) começa com a letra J ou com a letra K.
+
+SELECT * FROM HR.EMPLOYEES
+WHERE LAST_NAME LIKE 'J%' OR LAST_NAME LIKE 'K%';
+
+----------------------------------------------------------------
+
+EXERCÍCIO 04 — Nome completo e comissão
+Nível 1: Consultas básicas, filtros e ordenação
+Exiba o nome completo (primeiro nome + sobrenome) e a comissão (COMMISSION_PCT) de todos os funcionários que recebem comissão, em ordem decrescente do percentual.
+
+SELECT CONCAT(FIRST_NAME, ' ', LAST_NAME) AS NOME_COMPLETO, COMMISSION_PCT 
+FROM HR.EMPLOYEES
+WHERE COMMISSION_PCT IS NOT NULL
+ORDER BY COMMISSION_PCT DESC;
+
+----------------------------------------------------------------
+
+EXERCÍCIO 05 — Localizações dos EUA e Canadá
+Nível 1: Consultas básicas, filtros e ordenação
+Mostre o ID da localização, endereço de rua e cidade das localizações cujo país (COUNTRY_ID) é US ou CA.
+
+SELECT LOCATION_ID, STREET_ADDRESS, CITY 
+FROM HR.LOCATIONS
+WHERE COUNTRY_ID = 'US' OR COUNTRY_ID = 'CA';
+
+----------------------------------------------------------------
+
+EXERCÍCIO 06 — Funcionário e departamento
+Nível 2: Junções (JOINs) e relacionamentos
+Exiba o primeiro nome de cada funcionário, seu ID de departamento e o nome do departamento (DEPARTMENT_NAME).
+
+SELECT e.FIRST_NAME AS FIRST_NAME, e.DEPARTMENT_ID AS DEPARTMENT_ID, d.DEPARTMENT_NAME AS DEPARTMENT_NAME
+FROM HR.EMPLOYEES e
+INNER JOIN HR.DEPARTMENTS d 
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID;
+
+----------------------------------------------------------------
+
+EXERCÍCIO 07 — Cargo e faixa salarial
+Nível 2: Junções (JOINs) e relacionamentos
+Liste o primeiro nome do funcionário, o título do cargo (JOB_TITLE) e os salários mínimo e máximo permitidos para o cargo.
+
+SELECT e.FIRST_NAME AS FIRST_NAME, j.JOB_TITLE AS JOB_TITLE, j.MIN_SALARY AS MIN_SALARY, j.MAX_SALARY AS MAX_SALARY
+FROM HR.EMPLOYEES e
+INNER JOIN HR.JOBS j
+ON e.JOB_ID = j.JOB_ID;
+
+----------------------------------------------------------------
+
+EXERCÍCIO 08 — Departamento e localização
+Nível 2: Junções (JOINs) e relacionamentos
+Mostre o sobrenome de cada funcionário, o nome do departamento, a cidade (CITY) e o estado (STATE_PROVINCE) onde o departamento está localizado.
+
+SELECT e.LAST_NAME AS LAST_NAME, d.DEPARTMENT_NAME AS DEPARTMENT_NAME, l.CITY AS CITY, l.STATE_PROVINCE AS STATE_PROVINCE
+FROM HR.EMPLOYEES e
+INNER JOIN HR.DEPARTMENTS d
+ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+INNER JOIN HR.LOCATIONS l 
+ON d.LOCATION_ID = l.LOCATION_ID;
+
+----------------------------------------------------------------
+
+EXERCÍCIO 09 — Quem é o gerente?
+Nível 2: Junções (JOINs) e relacionamentos
+Liste o primeiro nome de cada funcionário e o primeiro nome do seu respectivo gerente. Nomeie as colunas como Funcionario e Gerente.
+
+SELECT e.FIRST_NAME AS FUNCIONARIO, g.FIRST_NAME AS GERENTE
+FROM HR.EMPLOYEES e
+INNER JOIN HR.EMPLOYEES g
+ON e.EMPLOYEE_ID = g.MANAGER_ID;
+
+----------------------------------------------------------------
+
+EXERCÍCIO 10 — Todos os departamentos
+Nível 2: Junções (JOINs) e relacionamentos
+Liste todos os departamentos e a quantidade de funcionários em cada um, incluindo os departamentos sem funcionários, com contagem 0.
+
+SELECT 
+    d.DEPARTMENT_NAME AS DEPARTAMENTO,
+    COUNT(e.EMPLOYEE_ID) AS QUANTIDADE_FUNCIONARIOS
+FROM HR.DEPARTMENTS d
+LEFT JOIN HR.EMPLOYEES e
+    ON d.DEPARTMENT_ID = e.DEPARTMENT_ID
+GROUP BY d.DEPARTMENT_ID, d.DEPARTMENT_NAME
+ORDER BY QUANTIDADE_FUNCIONARIOS DESC;
+
+----------------------------------------------------------------
+
+EXERCÍCIO 11 — Resumo dos salários
+Nível 3: Agregações, agrupamentos e subconsultas
+Mostre o maior salário, o menor salário, a soma dos salários e a média salarial da empresa inteira.
+
+SELECT MAX(SALARY) AS MAX_SALARIO, MIN(SALARY) AS MENOR_SALARIO, SUM(SALARY) AS SOMATORIO_SALARIO, ROUND(AVG(SALARY), 2) AS MEDIA_SALARIO
+FROM HR.EMPLOYEES;
+
+
+
+----------------------------------------------------------------
+
+EXERCÍCIO 12 — Departamentos acima da média
+Nível 3: Agregações, agrupamentos e subconsultas
+Exiba o ID de cada departamento e sua média salarial, mas apenas para departamentos cuja média salarial seja maior que $6.000.
+
+SELECT 
+    d.DEPARTMENT_ID AS DEPARTAMENT_ID,
+    ROUND(AVG(e.SALARY), 2) AS MEDIA_SALARIO
+FROM HR.DEPARTMENTS d
+INNER JOIN HR.EMPLOYEES e
+    ON d.DEPARTMENT_ID = e.DEPARTMENT_ID
+GROUP BY d.DEPARTMENT_ID
+HAVING AVG(e.SALARY) > 6000
+ORDER BY MEDIA_SALARIO DESC;
+
+----------------------------------------------------------------
+
+EXERCÍCIO 13 — Maior folha por cargo
+Nível 3: Agregações, agrupamentos e subconsultas
+Descubra qual cargo (JOB_ID) possui o maior gasto total com salários (soma dos salários pagos aos funcionários do cargo).
+
+SELECT 
+    JOB_ID,
+    SUM(SALARY) AS TOTAL_SALARIOS
+FROM HR.EMPLOYEES
+GROUP BY JOB_ID
+ORDER BY TOTAL_SALARIOS DESC
+FETCH FIRST 1 ROW ONLY;
+
+
+----------------------------------------------------------------
+
+EXERCÍCIO 14 — Acima da média da empresa
+Nível 3: Agregações, agrupamentos e subconsultas
+Selecione o primeiro nome e o salário dos funcionários que ganham mais do que a média salarial da empresa inteira. Use subconsulta.
+
+SELECT 
+    FIRST_NAME,
+    SALARY
+FROM HR.EMPLOYEES
+WHERE SALARY > (
+    SELECT AVG(SALARY)
+    FROM HR.EMPLOYEES
+);
+
+
+----------------------------------------------------------------
+
+EXERCÍCIO 15 — Colegas de Lex
+Nível 3: Agregações, agrupamentos e subconsultas
+Liste o primeiro nome e o ID do departamento dos funcionários que trabalham no mesmo departamento que um funcionário chamado Lex. Use subconsulta.
+
+-- Não respondido
+
+----------------------------------------------------------------
+
+EXERCÍCIO 16 — Simulação de aumento
+Nível 4: Desafios avançados
+Exiba o primeiro nome, salário atual e salário projetado com aumento de 15%, formatando os dois valores monetários com duas casas decimais.
+
+-- Não respondido
+
+----------------------------------------------------------------
+
+EXERCÍCIO 17 — Tempo de casa
+Nível 4: Desafios avançados
+Mostre o primeiro nome de cada funcionário e quantos anos completos ele tem de empresa, contando desde HIRE_DATE até a data atual.
+
+-- Não respondido
+
+----------------------------------------------------------------
+
+EXERCÍCIO 18 — Classificação por salário
+Nível 4: Desafios avançados
+Mostre o primeiro nome, salário e classificação: JÚNIOR para salários menores que 5.000, PLENO de 5.000 a 10.000 (inclusive) e SÊNIOR acima de 10.000. Use CASE.
+
+-- Não respondido
+
+----------------------------------------------------------------
+
+EXERCÍCIO 19 — Lista única de gerentes
+Nível 4: Desafios avançados
+Mostre o primeiro nome e o sobrenome de todos os gerentes da empresa, sem repetir nomes. Considere gerente quem aparece na coluna MANAGER_ID de algum funcionário.
+
+-- Não respondido
+
+----------------------------------------------------------------
+
+EXERCÍCIO 20 — Maior salário do departamento
+Nível 4: Desafios avançados
+Mostre o primeiro nome, salário e ID do departamento dos funcionários que recebem o maior salário dentro de seu próprio departamento.
+
+-- Não respondido
+
+----------------------------------------------------------------
