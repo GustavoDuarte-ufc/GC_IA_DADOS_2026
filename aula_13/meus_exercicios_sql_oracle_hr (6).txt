@@ -174,7 +174,16 @@ EXERCÍCIO 15 — Colegas de Lex
 Nível 3: Agregações, agrupamentos e subconsultas
 Liste o primeiro nome e o ID do departamento dos funcionários que trabalham no mesmo departamento que um funcionário chamado Lex. Use subconsulta.
 
--- Não respondido
+SELECT 
+    FIRST_NAME, 
+    DEPARTMENT_ID
+FROM HR.EMPLOYEES
+WHERE DEPARTMENT_ID = (
+    SELECT DEPARTMENT_ID
+    FROM HR.EMPLOYEES
+    WHERE FIRST_NAME = 'Lex'
+);
+
 
 ----------------------------------------------------------------
 
@@ -182,7 +191,11 @@ EXERCÍCIO 16 — Simulação de aumento
 Nível 4: Desafios avançados
 Exiba o primeiro nome, salário atual e salário projetado com aumento de 15%, formatando os dois valores monetários com duas casas decimais.
 
--- Não respondido
+SELECT
+    FIRST_NAME,
+    ROUND(SALARY, 2) AS SALARIO_ATUAL,
+    ROUND(SALARY * 1.15, 2) AS SALARIO_PROJETADO
+FROM HR.EMPLOYEES;
 
 ----------------------------------------------------------------
 
@@ -190,7 +203,10 @@ EXERCÍCIO 17 — Tempo de casa
 Nível 4: Desafios avançados
 Mostre o primeiro nome de cada funcionário e quantos anos completos ele tem de empresa, contando desde HIRE_DATE até a data atual.
 
--- Não respondido
+SELECT
+    FIRST_NAME,
+    TRUNC(MONTHS_BETWEEN(SYSDATE, HIRE_DATE) / 12) AS ANOS_TRABALHADOS
+FROM HR.EMPLOYEES;
 
 ----------------------------------------------------------------
 
@@ -198,7 +214,16 @@ EXERCÍCIO 18 — Classificação por salário
 Nível 4: Desafios avançados
 Mostre o primeiro nome, salário e classificação: JÚNIOR para salários menores que 5.000, PLENO de 5.000 a 10.000 (inclusive) e SÊNIOR acima de 10.000. Use CASE.
 
--- Não respondido
+SELECT
+    FIRST_NAME,
+    SALARY,
+    CASE
+        WHEN SALARY < 5000 THEN 'JÚNIOR'
+        WHEN SALARY >= 5000 AND SALARY < 10000 THEN 'PLENO'
+        WHEN SALARY >= 10000 THEN 'SÊNIOR'
+        ELSE 'ERRO'
+    END AS CLASSIFICACAO
+FROM HR.EMPLOYEES;
 
 ----------------------------------------------------------------
 
@@ -206,7 +231,12 @@ EXERCÍCIO 19 — Lista única de gerentes
 Nível 4: Desafios avançados
 Mostre o primeiro nome e o sobrenome de todos os gerentes da empresa, sem repetir nomes. Considere gerente quem aparece na coluna MANAGER_ID de algum funcionário.
 
--- Não respondido
+SELECT DISTINCT
+    m.FIRST_NAME,
+    m.LAST_NAME
+FROM HR.EMPLOYEES e
+INNER JOIN HR.EMPLOYEES m
+    ON e.MANAGER_ID = m.EMPLOYEE_ID;
 
 ----------------------------------------------------------------
 
@@ -214,6 +244,15 @@ EXERCÍCIO 20 — Maior salário do departamento
 Nível 4: Desafios avançados
 Mostre o primeiro nome, salário e ID do departamento dos funcionários que recebem o maior salário dentro de seu próprio departamento.
 
--- Não respondido
+SELECT
+    e.FIRST_NAME,
+    e.SALARY,
+    e.DEPARTMENT_ID
+FROM HR.EMPLOYEES e
+WHERE e.SALARY = (
+    SELECT MAX(e2.SALARY)
+    FROM HR.EMPLOYEES e2
+    WHERE e2.DEPARTMENT_ID = e.DEPARTMENT_ID
+);
 
 ----------------------------------------------------------------
