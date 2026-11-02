@@ -1,4 +1,4 @@
-from GC_IA_DADOS_2026.aula_14.src.translate.traducoes_frutas import fruta_em_ingles
+from src.translate.traducoes_frutas import fruta_em_ingles
 
 nome = "123"
 fruta_traduzida = fruta_em_ingles(nome)

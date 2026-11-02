@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 import httpx
-from GC_IA_DADOS_2026.aula_14.src.translate.traducoes_frutas import fruta_em_ingles, traduzir_fruta
+from src.translate.traducoes_frutas import fruta_em_ingles, traduzir_fruta
 
 frutas_router = APIRouter(
     prefix="/frutas",

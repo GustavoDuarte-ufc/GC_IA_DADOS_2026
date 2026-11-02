@@ -8,9 +8,9 @@ Rode na raiz do projeto com:
 import pytest
 from fastapi.testclient import TestClient
 
-import GC_IA_DADOS_2026.aula_14.src.db.conn as conn_module
-import GC_IA_DADOS_2026.aula_14.src.routes.sucos as sucos_module
-from GC_IA_DADOS_2026.aula_14.main import app
+import src.db.conn as conn_module
+import src.routes.sucos as sucos_module
+from main import app
 
 # Valores falsos para não depender da internet durante o teste
 FRUTAS_FALSAS = {

@@ -1,4 +1,4 @@
-from GC_IA_DADOS_2026.aula_14.src.db.conn import conexao
+from src.db.conn import conexao
 
 
 def criar_tabelas():

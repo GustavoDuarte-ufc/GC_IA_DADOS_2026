@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException, status
 
-from GC_IA_DADOS_2026.aula_14.src.routes.frutas import get_fruta
-from GC_IA_DADOS_2026.aula_14.src.schemas.sucos_schema import CriarNovoSuco, SucoResponse, AlterarNomeSuco
-from GC_IA_DADOS_2026.aula_14.src.repository.sucos_repository import (
+from src.routes.frutas import get_fruta
+from src.schemas.sucos_schema import CriarNovoSuco, SucoResponse, AlterarNomeSuco
+from src.repository.sucos_repository import (
     cadastrar_suco, get_all_sucos, atualizar_nome_suco
 )
-from GC_IA_DADOS_2026.aula_14.src.translate.traducoes_frutas import fruta_em_ingles
+from src.translate.traducoes_frutas import fruta_em_ingles
 
 
 sucos = APIRouter(prefix="/sucos", tags=["Sucos"])
@@ -15,7 +15,7 @@ sucos = APIRouter(prefix="/sucos", tags=["Sucos"])
     "/",
     response_model=SucoResponse,
     status_code=status.HTTP_201_CREATED,
-    summary="Cadastrar um novo suco"
+    summary="Cadastrar um novo suco "
 )
 async def criar_suco(suco: CriarNovoSuco):
     nome = suco.nome.strip()

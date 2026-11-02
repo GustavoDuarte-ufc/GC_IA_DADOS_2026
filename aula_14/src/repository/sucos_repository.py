@@ -1,6 +1,6 @@
 import json
 import sqlite3
-from GC_IA_DADOS_2026.aula_14.src.db.conn import conexao
+from src.db.conn import conexao
 
 
 def cadastrar_suco(suco: dict):
